@@ -564,7 +564,7 @@ used: over 1 hr
 
 const crypto = globalThis.crypto;
 
-// stole from https://nodejs.org/api/webcrypto.html#encryption-and-decryption
+// stolen from https://nodejs.org/api/webcrypto.html#encryption-and-decryption
 async function generateAesKey(length = 256) {
   const key = await crypto.subtle.generateKey({
     name: 'AES-CBC',
@@ -600,6 +600,18 @@ async function aesDecrypt(ciphertext, key, iv) {
 
   return dec.decode(plaintext);
 }
+
+// stolen from https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+async function digestMessage(message) {
+  const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+  const hashBuffer = await crypto.subtle.digest("SHA-1", msgUint8); // hash the message
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join(""); // convert bytes to hex string
+  return hashHex;
+}
+
 
 // const url = 'www.github.com/kvnchen';
 // const encryptTest = 
